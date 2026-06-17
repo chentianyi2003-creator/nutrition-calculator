@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>食物热量计算器</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f7f7f7;
+      margin: 0;
+      padding: 30px;
+    }
+
+    .container {
+      max-width: 750px;
+      margin: auto;
+      background: white;
+      padding: 25px;
+      border-radius: 16px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    .form {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    select, input, button {
+      padding: 10px;
+      font-size: 16px;
+    }
+
+    button {
+      cursor: pointer;
+      border: none;
+      background: #222;
+      color: white;
+      border-radius: 8px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+
+    th, td {
+      border-bottom: 1px solid #ddd;
+      padding: 10px;
+      text-align: center;
+    }
+
+    .summary {
+      margin-top: 20px;
+      padding: 15px;
+      background: #f0f0f0;
+      border-radius: 12px;
+    }
+
+    .summary p {
+      margin: 6px 0;
+      font-size: 17px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>食物热量与营养计算器</h1>
+
+    <div class="form">
+      <select id="foodSelect"></select>
+      <input type="number" id="gramsInput" placeholder="输入克数 g" />
+      <button onclick="addFood()">添加</button>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>食物</th>
+          <th>克数</th>
+          <th>热量</th>
+          <th>蛋白质</th>
+          <th>碳水</th>
+          <th>脂肪</th>
+        </tr>
+      </thead>
+      <tbody id="foodTable"></tbody>
+    </table>
+
+    <div class="summary">
+      <p><strong>今日总热量：</strong><span id="totalCalories">0</span> kcal</p>
+      <p><strong>蛋白质：</strong><span id="totalProtein">0</span> g</p>
+      <p><strong>碳水：</strong><span id="totalCarbs">0</span> g</p>
+      <p><strong>脂肪：</strong><span id="totalFat">0</span> g</p>
+    </div>
+  </div>
+
+  <script>
+    const foods = [
+      { name: "米饭", calories: 116, protein: 2.6, carbs: 25.9, fat: 0.3 },
+      { name: "鸡胸肉", calories: 165, protein: 31, carbs: 0, fat: 3.6 },
+      { name: "鸡蛋", calories: 143, protein: 13, carbs: 1.1, fat: 9.5 },
+      { name: "虾", calories: 99, protein: 24, carbs: 0.2, fat: 0.3 },
+      { name: "西兰花", calories: 35, protein: 2.4, carbs: 7.2, fat: 0.4 },
+      { name: "牛油果", calories: 160, protein: 2, carbs: 8.5, fat: 14.7 },
+      { name: "希腊酸奶", calories: 59, protein: 10, carbs: 3.6, fat: 0.4 }
+    ];
+
+    let totalCalories = 0;
+    let totalProtein = 0;
+    let totalCarbs = 0;
+    let totalFat = 0;
+
+    const foodSelect = document.getElementById("foodSelect");
+
+    foods.forEach((food, index) => {
+      const option = document.createElement("option");
+      option.value = index;
+      option.textContent = food.name;
+      foodSelect.appendChild(option);
+    });
+
+    function addFood() {
+      const foodIndex = foodSelect.value;
+      const grams = Number(document.getElementById("gramsInput").value);
+
+      if (!grams || grams <= 0) {
+        alert("请输入正确的克数");
+        return;
+      }
+
+      const food = foods[foodIndex];
+
+      const calories = food.calories * grams / 100;
+      const protein = food.protein * grams / 100;
+      const carbs = food.carbs * grams / 100;
+      const fat = food.fat * grams / 100;
+
+      totalCalories += calories;
+      totalProtein += protein;
+      totalCarbs += carbs;
+      totalFat += fat;
+
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td>${food.name}</td>
+        <td>${grams}g</td>
+        <td>${calories.toFixed(1)}</td>
+        <td>${protein.toFixed(1)}g</td>
+        <td>${carbs.toFixed(1)}g</td>
+        <td>${fat.toFixed(1)}g</td>
+      `;
+
+      document.getElementById("foodTable").appendChild(row);
+
+      document.getElementById("totalCalories").textContent = totalCalories.toFixed(1);
+      document.getElementById("totalProtein").textContent = totalProtein.toFixed(1);
+      document.getElementById("totalCarbs").textContent = totalCarbs.toFixed(1);
+      document.getElementById("totalFat").textContent = totalFat.toFixed(1);
+
+      document.getElementById("gramsInput").value = "";
+    }
+  </script>
+</body>
+</html>
