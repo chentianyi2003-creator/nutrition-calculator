@@ -45,6 +45,12 @@
       border-radius: 8px;
     }
 
+    .delete-btn {
+      background: #d9534f;
+      padding: 6px 10px;
+      font-size: 14px;
+    }
+
     table {
       width: 100%;
       border-collapse: collapse;
@@ -89,6 +95,7 @@
           <th>蛋白质</th>
           <th>碳水</th>
           <th>脂肪</th>
+          <th>操作</th>
         </tr>
       </thead>
       <tbody id="foodTable"></tbody>
@@ -156,16 +163,43 @@
         <td>${protein.toFixed(1)}g</td>
         <td>${carbs.toFixed(1)}g</td>
         <td>${fat.toFixed(1)}g</td>
+        <td>
+          <button class="delete-btn" onclick="deleteFood(this, ${calories}, ${protein}, ${carbs}, ${fat})">
+            删除
+          </button>
+        </td>
       `;
 
       document.getElementById("foodTable").appendChild(row);
 
+      updateTotals();
+
+      document.getElementById("gramsInput").value = "";
+    }
+
+    function deleteFood(button, calories, protein, carbs, fat) {
+      totalCalories -= calories;
+      totalProtein -= protein;
+      totalCarbs -= carbs;
+      totalFat -= fat;
+
+      // 避免出现 -0.0 这种情况
+      totalCalories = Math.max(0, totalCalories);
+      totalProtein = Math.max(0, totalProtein);
+      totalCarbs = Math.max(0, totalCarbs);
+      totalFat = Math.max(0, totalFat);
+
+      const row = button.parentElement.parentElement;
+      row.remove();
+
+      updateTotals();
+    }
+
+    function updateTotals() {
       document.getElementById("totalCalories").textContent = totalCalories.toFixed(1);
       document.getElementById("totalProtein").textContent = totalProtein.toFixed(1);
       document.getElementById("totalCarbs").textContent = totalCarbs.toFixed(1);
       document.getElementById("totalFat").textContent = totalFat.toFixed(1);
-
-      document.getElementById("gramsInput").value = "";
     }
   </script>
 </body>
